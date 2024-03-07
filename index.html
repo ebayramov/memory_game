@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table {
+            margin: 10px 0;
+            border-collapse: collapse;
+            width: 500px;
+        }
+
+        td {
+            border: 1px solid #333;
+            width: 100px;
+            height: 100px;
+            text-align: center;
+            background-position: center;
+            background-size: cover;
+        }
+
+        h1 {
+            color: red;
+            margin-left: 230px;
+        }
+       
+    </style>
+</head>
+
+<body>
+    <h1></h1>
+    <table></table>
+
+    <script>
+        const tbl = document.querySelector('table')
+        const zaman = document.querySelector('h1')
+        let arr = []
+        let arr2 = []
+        let matrix = []
+        let ilk = []
+        let count = 0
+        let you = ' YOU '
+        let won = '  WON'
+        let game = ' GAME'
+        let over = ' OVER'
+        let saniye = 30
+
+
+        for (i = 1; i <= 8; i++) { arr.push(i); arr.push(i) }
+        showTable()
+
+        function showTable() {
+            let kod = ''
+            for (i = 1; i <= 4; i++) {
+                kod += '<tr>'
+                matrix[i] = []
+                for (j = 1; j <= 4; j++) {
+                    let x = rand(0, arr.length - 1)
+                    kod += `<td id='c${i}${j}' onclick='ac(${i}, ${j})' background="icon/${arr[x]}.png">  </td>`
+                    arr2.push(arr[x])
+                    matrix[i][j] = arr[x]
+                    arr.splice(x, 1)
+                }
+                kod += '</tr>'
+            }
+            tbl.innerHTML = kod
+        }
+
+        setTimeout(bagla, 3000)
+
+        function bagla() {
+            const td = document.querySelectorAll('td')
+            for (i = 0; i < 16; i++) { td[i].setAttribute("background", "icon/0.png") }
+        }
+
+        function ac(i, j) {
+            const xana = document.getElementById(`c${i}${j}`)
+            const xana0 = document.getElementById(`c${ilk[0]}${ilk[1]}`)
+            let eded = (i - 1) * 4 + j - 1
+            xana.setAttribute("background", `icon/${arr2[eded]}.png`)
+            xana.style = `transform: rotateY(360deg); transition: 2s;`           
+            if (ilk.length) {
+                if (matrix[i][j] == matrix[ilk[0]][ilk[1]]) { count++ }
+                if (matrix[i][j] != matrix[ilk[0]][ilk[1]]) {
+                    setTimeout(() => {
+                        xana.setAttribute("background", `icon/0.png`)
+                        xana0.setAttribute("background", `icon/0.png`)
+                    }, 2000)
+                }
+                ilk = []
+            }
+            else {
+                ilk = [i, j]
+            }
+            if (count == 8) {
+                clearInterval(vaxt)
+                zaman.innerHTML = ''
+                kod = '';
+                for (let p = 1; p <= 4; p++) {
+                    kod += '<tr>';
+                    for (let q = 1; q <= 4; q++) {
+                        let r = rand(1, 10);
+                        let g = rand(1, 50);
+                        let b = rand(1, 50);
+                        text = p === 2 ? you[q] : p === 3 ? won[q] : '';
+                        kod += `<td bgcolor="rgb(${r}, ${g}, ${b})" style="color: white">${text}</td>`;
+                    }
+                    kod += '</tr>';
+                }
+                tbl.innerHTML = kod;
+            }
+        }
+
+        let vaxt
+        setTimeout(() => { vaxt = setInterval(azalt, 1000) }, 2000)
+        function azalt() {
+            zaman.innerHTML = saniye
+            if (saniye == -1) {
+                clearInterval(vaxt)
+                zaman.innerHTML = ''
+                kod = ''
+                for (i = 1; i <= 4; i++) {
+                    kod += '<tr>'
+                    for (j = 1; j <= 4; j++) {
+                        text = i == 2 ? game[j] : i == 3 ? over[j] : ''
+                        kod += `<td bgcolor="black" style="color: yellow"> ${text} </td>`
+                    }
+                    kod += '</tr>'
+                }
+                tbl.innerHTML = kod
+            }
+            saniye--
+        }
+
+        function rand(min, max) {
+            let z = Math.floor((max - min + 1) * Math.random()) + min;
+            return z
+        }
+
+    </script>
+</body>
+
+</html>
